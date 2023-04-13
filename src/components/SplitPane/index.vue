@@ -4,7 +4,7 @@
   @date: 2022-11-08
   @description:
     * props:
-        - splotCount: 分割数量, default: 2
+        - splitCount: 分割数量, default: 2
         - direction: 分割方向, 'vertical' or 'horizontal', default: 'horizontal'
         - defaultRatio: 默认比例, 类型数组, default: [1/spiltCount, 1/spiltCount, ...]
     * slots:
