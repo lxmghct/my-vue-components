@@ -1,5 +1,8 @@
 <!-- IpInput
-  使用方法：<ip-input v-model="ip" />
+  @description IP地址输入框
+    * props:
+        - value: IP地址, 格式为xx.xx.xx.xx, default: ''
+        - disabled: 是否禁用, default: false
   @date 2023-04-10
 -->
 <template>
@@ -14,6 +17,7 @@
         :class="{
           'ip-input__item--active': index === activeIndex,
         }"
+        :disabled="disabled"
         @input="handleInput(index)"
         @focus="handleFocus(index)"
         @blur="handleBlur(index)"
@@ -21,7 +25,6 @@
         @keydown.right.exact="handleFocus(index + 1)"
         @keydown.backspace.exact="handleBackspace(index)"
       >
-      <!-- 除了最后一段，每一段后面都有一个点 -->
       <span v-if="index !== ipArr.length - 1" class="ip-input__dot">.</span>
     </div>
   </div>
@@ -34,6 +37,10 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -49,6 +56,7 @@ export default {
       immediate: true,
       handler(newVal, oldVal) {
         if (newVal !== oldVal) {
+          this.$emit('change', newVal, oldVal)
           this.ipArr = ['', '', '', '']
           const tempArr = newVal.split('.')
           for (let i = 0; i < tempArr.length; i++) {
@@ -77,7 +85,7 @@ export default {
     window.addEventListener('paste', this.pasteListener)
     window.addEventListener('copy', this.copyListener)
   },
-  destroyed() {
+  beforeDestroy() {
     window.removeEventListener('paste', this.pasteListener)
     window.removeEventListener('copy', this.copyListener)
   },
@@ -92,7 +100,7 @@ export default {
         this.ipArr[index] = this.oldIpInput[index]
         return false
       }
-      this.$emit('input', this.ipArr.join('.'))
+      this.$emit('input', this.ipArr.join('.'), index)
       this.oldIpInput[index] = newValue
       if (newValue.length === 3 || (newValue.length === 2 && newValue > 25)) {
         if (index === this.ipArr.length - 1) { return true }
