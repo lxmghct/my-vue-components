@@ -230,10 +230,20 @@ export default {
 
   mounted () {
     this._initialize()
+  },
+
+  created () {
     document.addEventListener('mousemove', this._onMouseMove)
     document.addEventListener('mouseup', this._onMouseUp)
     document.addEventListener('touchmove', this._onMouseMove)
     document.addEventListener('touchend', this._onMouseUp)
+  },
+
+  beforeDestroy () {
+    document.removeEventListener('mousemove', this._onMouseMove)
+    document.removeEventListener('mouseup', this._onMouseUp)
+    document.removeEventListener('touchmove', this._onMouseMove)
+    document.removeEventListener('touchend', this._onMouseUp)
   }
 
 }
@@ -252,15 +262,15 @@ export default {
   flex-direction: row;
 }
 .split-horizontal-item {
-    display: flex;
-    height: 100%;
-    flex-direction: row-reverse;
+  display: flex;
+  height: 100%;
+  flex-direction: row-reverse;
 }
 .split-horizontal-content {
-    flex-grow: 1;
-    overflow: auto;
-    width: 0;
-    position: relative;
+  flex-grow: 1;
+  overflow: auto;
+  width: 0;
+  position: relative;
 }
 .split-horizontal-line {
   width: 6px;
@@ -272,15 +282,15 @@ export default {
   background-size: 6px 100%;
 }
 .split-vertical-item {
-    display: flex;
-    width: 100%;
-    flex-direction: column-reverse;
+  display: flex;
+  width: 100%;
+  flex-direction: column-reverse;
 }
 .split-vertical-content {
-    flex-grow: 1;
-    overflow: auto;
-    height: 0;
-    position: relative;
+  flex-grow: 1;
+  overflow: auto;
+  height: 0;
+  position: relative;
 }
 .split-vertical-line {
   height: 6px;
