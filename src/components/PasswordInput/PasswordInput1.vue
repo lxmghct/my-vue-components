@@ -2,6 +2,13 @@
     PasswordInput
     @description: 密码输入框, 由于type="password"的input会被浏览器记住密码且自动填充
         所以使用type="text"的input, 来实现密码输入框的功能
+    * props:
+        value: String, 密码
+        disabled: Boolean, 是否禁用
+    * events:
+        input: 密码输入时触发
+        focus: 聚焦时触发
+        blur: 失焦时触发
 -->
 <template>
     <div ref="main"
@@ -56,90 +63,90 @@
 
 <script>
 export default {
-    name: 'PasswordInput',
-    props: {
-        value: {
-            type: String,
-            default: ''
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        }
+  name: 'PasswordInput',
+  props: {
+    value: {
+      type: String,
+      default: ''
     },
-    data() {
-        return {
-            password: '',
-            oldInput: '',
-            passwordDisplay: '',
-            isActive: false,
-            showPassword: false,
-            maxLength: 20,
-            fontWidth: 10
-        }
-    },
-    watch: {
-        value() {
-            this.updatePasswordDisplay()
-        },
-        showPassword() {
-            this.updatePasswordDisplay()
-        }
-    },
-    methods: {
-        updatePasswordDisplay() {
-            if (this.showPassword) {
-                this.passwordDisplay = this.value
-            } else {
-                this.passwordDisplay = '*'.repeat(this.value.length)
-            }
-            this.$refs.passwordInputDisplay.innerHTML = this.passwordDisplay
-        },
-        handleInput(e) {
-            // 删除非法字符(只保留code>=32且code<=126的字符)
-            const value = e.target.value
-            const newValue = value.replace(/[^\x20-\x7E]/g, '')
-            if (newValue !== value) {
-                this.password = newValue
-            }
-            if (newValue.length > this.maxLength) {
-                this.password = this.oldInput
-            }
-            this.oldInput = this.password
-            this.$emit('input', this.password)
-        }
-    },
-    mounted () {
-        this.$refs.passwordInputDisplay.style.lineHeight = this.$refs.main.clientHeight + 'px'
-        // 计算maxLength,宽度/字体大小
-        const width = this.$refs.passwordInput.clientWidth - 20 // 20为padding
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
-        ctx.font = '16px monospace'
-        this.fontWidth = ctx.measureText('A').width
-        this.maxLength = Math.floor(width / this.fontWidth)
-    },
-    created() {
-        this.selectionEvent = () => {
-            const display = this.$refs.passwordInputDisplay
-            display.style.zIndex = 1
-            display.innerHTML = this.passwordDisplay
-            if (!this.isActive) { return }
-            const selection = window.getSelection()
-            // 如果选中的内容不为空, 则由passwordInputDisplay显示
-            if (!selection.toString()) { return }
-            const input = this.$refs.passwordInput
-            const start = input.selectionStart
-            const end = input.selectionEnd
-            const highlightString = '<span style="background-color: #409eff; color: #fff;">' + this.passwordDisplay.slice(start, end) + '</span>'
-            display.innerHTML = this.passwordDisplay.slice(0, start) + highlightString + this.passwordDisplay.slice(end)
-            display.style.zIndex = 4
-        }
-        document.addEventListener('selectionchange', this.selectionEvent)
-    },
-    beforeDestroy() {
-        document.removeEventListener('selectionchange', this.selectionEvent)
+    disabled: {
+      type: Boolean,
+      default: false
     }
+  },
+  data () {
+    return {
+      password: '',
+      oldInput: '',
+      passwordDisplay: '',
+      isActive: false,
+      showPassword: false,
+      maxLength: 20,
+      fontWidth: 10
+    }
+  },
+  watch: {
+    value () {
+      this.updatePasswordDisplay()
+    },
+    showPassword () {
+      this.updatePasswordDisplay()
+    }
+  },
+  methods: {
+    updatePasswordDisplay () {
+      if (this.showPassword) {
+        this.passwordDisplay = this.value
+      } else {
+        this.passwordDisplay = '*'.repeat(this.value.length)
+      }
+      this.$refs.passwordInputDisplay.innerHTML = this.passwordDisplay
+    },
+    handleInput (e) {
+      // 删除非法字符(只保留code>=32且code<=126的字符)
+      const value = e.target.value
+      const newValue = value.replace(/[^\x20-\x7E]/g, '')
+      if (newValue !== value) {
+        this.password = newValue
+      }
+      if (newValue.length > this.maxLength) {
+        this.password = this.oldInput
+      }
+      this.oldInput = this.password
+      this.$emit('input', this.password)
+    }
+  },
+  mounted () {
+    this.$refs.passwordInputDisplay.style.lineHeight = this.$refs.main.clientHeight + 'px'
+    // 计算maxLength,宽度/字体大小
+    const width = this.$refs.passwordInput.clientWidth - 20 // 20为padding
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    ctx.font = '16px monospace'
+    this.fontWidth = ctx.measureText('A').width
+    this.maxLength = Math.floor(width / this.fontWidth)
+  },
+  created () {
+    this.selectionEvent = () => {
+      const display = this.$refs.passwordInputDisplay
+      display.style.zIndex = 1
+      display.innerHTML = this.passwordDisplay
+      if (!this.isActive) { return }
+      const selection = window.getSelection()
+      // 如果选中的内容不为空, 则由passwordInputDisplay显示
+      if (!selection.toString()) { return }
+      const input = this.$refs.passwordInput
+      const start = input.selectionStart
+      const end = input.selectionEnd
+      const highlightString = '<span style="background-color: #409eff; color: #fff;">' + this.passwordDisplay.slice(start, end) + '</span>'
+      display.innerHTML = this.passwordDisplay.slice(0, start) + highlightString + this.passwordDisplay.slice(end)
+      display.style.zIndex = 4
+    }
+    document.addEventListener('selectionchange', this.selectionEvent)
+  },
+  beforeDestroy () {
+    document.removeEventListener('selectionchange', this.selectionEvent)
+  }
 }
 </script>
 
