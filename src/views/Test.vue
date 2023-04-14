@@ -26,19 +26,7 @@
             <button @click="handleClick">收藏</button>
         </div>
         <div style="margin-top: 100px">
-            <input type="password">
-            <input type="password">
-            <input type="text" onfocus="this.type='password'">
-            <input type="text" onfocus="this.type='password'">
-<!-- <form style="display:none">
-  <input type="password"/>
-</form>
-<input type="password" style="width:0;height:0;float:left;visibility:hidden"/> -->
-            <!-- <input type="password"
-                    autocomplete="new-password"
-                    auto-complete="new-password"
-                    v-model="password2"> -->
-            <input ref="testPassword" type="password" readonly v-model="password2">
+            <!-- <input ref="testPassword" type="password" readonly v-model="password2"> -->
         </div>
     </div>
 </template>
@@ -61,10 +49,6 @@ export default {
         }
     },
     mounted () {
-        const that = this
-        setTimeout(function removeReadonly(){
-            that.$refs.testPassword.removeAttribute("readonly")
-        },20);
     },
     methods: {
         handleClick() {

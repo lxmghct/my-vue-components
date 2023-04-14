@@ -20,7 +20,6 @@
              'password-input--disabled': disabled
          }">
         <input
-            id="passwordInput"
             ref="passwordInput"
             v-model="passwordDisplay"
             autocomplete="off"
@@ -119,10 +118,18 @@ export default {
         end: input.selectionEnd
       }
     }
+    this.copyEvent = (e) => {
+      if (!this.isActive) { return }
+      const clipboardData = e.clipboardData || window.clipboardData
+      clipboardData.setData('text', this.password.slice(this.selection.start, this.selection.end))
+      e.preventDefault()
+    }
     document.addEventListener('selectionchange', this.selectionEvent)
+    document.addEventListener('copy', this.copyEvent)
   },
   beforeDestroy () {
     document.removeEventListener('selectionchange', this.selectionEvent)
+    document.removeEventListener('copy', this.copyEvent)
   }
 }
 </script>
