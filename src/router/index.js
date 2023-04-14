@@ -8,12 +8,12 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: () => import('@/pages/Home')
+      component: () => import('@/views/Home')
     },
     {
       path: '/test',
       name: 'Test',
-      component: () => import('@/pages/Test')
+      component: () => import('@/views/Test')
     }
   ]
 })
