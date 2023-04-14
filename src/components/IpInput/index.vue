@@ -100,7 +100,7 @@ export default {
         this.ipArr[index] = this.oldIpInput[index]
         return false
       }
-      this.$emit('input', this.ipArr.join('.'), index)
+      this.$emit('input', this.ipArr.join('.'))
       this.oldIpInput[index] = newValue
       if (newValue.length === 3 || (newValue.length === 2 && newValue > 25)) {
         if (index === this.ipArr.length - 1) { return true }

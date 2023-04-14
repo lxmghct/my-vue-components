@@ -1,6 +1,7 @@
 <template>
     <div class="main">
         <h2>Test</h2>
+        <password-input-1 v-model="password"></password-input-1>
         <div class="split-container">
             <split-pane :split-count="3">
                 <template slot="pane1">
@@ -20,15 +21,39 @@
                     </split-pane>
                 </template>
             </split-pane>
+            <button @click="handleClick">收藏</button>
         </div>
     </div>
 </template>
 
 <script>
 import SplitPane from '@/components/SplitPane'
+import PasswordInput1 from '@/components/PasswordInput/PasswordInput1'
 export default {
     components: {
-        SplitPane
+        SplitPane,
+        PasswordInput1
+    },
+    data() {
+        return {
+            password: ''
+        }
+    },
+    methods: {
+        handleClick() {
+            // 触发浏览器收藏
+            // chrome、firefox、ie11、edge、safari
+            if (window.sidebar && window.sidebar.addPanel) {
+                window.sidebar.addPanel(document.title, window.location.href, '')
+            } else if (window.external && ('AddFavorite' in window.external)) {
+                window.external.AddFavorite(location.href, document.title)
+            } else if (document.all) {
+                window.external.AddFavorite(location.href, document.title)
+            } else {
+                alert('您的浏览器不支持,请按 Ctrl+D 手动收藏!')
+            }
+
+        }
     }
 }
 </script>

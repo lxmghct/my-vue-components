@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <h1> &nbsp; </h1>
-        <ip-input v-model="ip" input-class="test" />
+        <ip-input v-model="ip" />
         <!-- <p>ip: {{ ip }}</p> -->
     </div>
 </template>
