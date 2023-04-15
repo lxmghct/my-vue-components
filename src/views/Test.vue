@@ -2,6 +2,7 @@
     <div class="main">
         <h2>Test</h2>
         <password-input-1 v-model="password"></password-input-1>
+        <div style="height: 100px"></div>
         <password-input-2 v-model="password1"></password-input-2>
         <p>{{ password1 }}</p>
         <div class="split-container">
@@ -26,7 +27,13 @@
             <button @click="handleClick">收藏</button>
         </div>
         <div style="margin-top: 100px">
-            <!-- <input ref="testPassword" type="password" readonly v-model="password2"> -->
+            <!-- <div class="container">
+                <input v-model="passwordDisplay">
+                <input
+                    v-model="password"
+                    class="password"
+                    @input="passwordDisplay = password.replace(/./g, '*')">
+            </div> -->
         </div>
     </div>
 </template>
@@ -79,5 +86,17 @@ export default {
     width: 100%;
     height: 100%;
     color: #3dcdfd;
+}
+.container {
+  position: relative;
+}
+.container input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 12px;
+}
+.password {
+  opacity: 0;
 }
 </style>

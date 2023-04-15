@@ -19,7 +19,6 @@
          }">
         <div class="password-input__input-wrap">
             <input
-                id="passwordInput"
                 ref="passwordInput"
                 v-model="password"
                 autocomplete="off"
@@ -31,11 +30,8 @@
             >
             <span
                 ref="passwordInputDisplay"
-                type="text"
-                autocomplete="off"
                 class="password-input__input password-input__behind"
             />
-
         </div>
         <div class="password-input__eye-wrap">
             <div
