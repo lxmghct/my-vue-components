@@ -14,6 +14,11 @@ export default new Router({
       path: '/test',
       name: 'Test',
       component: () => import('@/views/Test')
+    },
+    {
+      path: '/search',
+      name: 'Search',
+      component: () => import('@/views/SearchTest')
     }
   ]
 })
