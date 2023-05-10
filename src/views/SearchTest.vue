@@ -1,6 +1,8 @@
 <template>
     <div>
-        <search-box :selector-list="['#search-main']"
+        <search-box
+            v-model="input"
+            :selector-list="['#search-main']"
             :before-jump="test"/>
         <div id="search-main">
             <h1>testip</h1>
@@ -33,6 +35,7 @@ export default {
     },
     methods: {
         handleClick () {
+            console.log(this.input)
         },
         test (val1, val2, val3, val4) {
             console.log(val1, val2, val3, val4)

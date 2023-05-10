@@ -4,6 +4,7 @@
   @date: 2023-05-05
   @description:
     * props:
+        - value/v-model: 检索框的值, default: ''
         - highlightColor: 高亮颜色, default: 'rgb(246, 186, 130)'
         - currentColor: 当前高亮颜色, default: 'rgb(246, 137, 31)'
         - selectorList: 检索的选择器列表, default: []
@@ -23,7 +24,7 @@
   <div class="search-box">
     <input
       v-model="input"
-      placeholder="当前页面检索"
+      placeholder="请输入检索内容"
       class="search-input"
       type="text"
       @input="search"
@@ -61,6 +62,10 @@ import { SearchBoxUtil } from './search_utils'
 export default {
   name: 'SearchBox',
   props: {
+    value: {
+      type: String,
+      default: ''
+    },
     highlightColor: {
       type: String,
       default: 'rgb(246, 186, 130)'
@@ -90,6 +95,11 @@ export default {
       searchBoxUtil: null
     }
   },
+  watch: {
+    value (val) {
+      this.input = val
+    }
+  },
   mounted () {
     this.searchBoxUtil = new SearchBoxUtil(this.highlightColor, this.currentColor)
     this.searchBoxUtil.setSelectorList(this.selectorList)
@@ -97,6 +107,7 @@ export default {
   },
   methods: {
     search () {
+      this.$emit('input', this.input)
       this.total = this.searchBoxUtil.search(this.input)
       if (this.total > 0) {
         this.searchBoxUtil.setCurrent(0)
