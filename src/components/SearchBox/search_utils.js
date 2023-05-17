@@ -1,16 +1,19 @@
+
+var myDocument = document
+
 /**
  * 创建css样式, 用于设置高亮的颜色
- * @param {String} css 
+ * @param {String} css
  */
-function createCssStyle(css) {
-  const style = document.createElement('style')
+function createCssStyle (css) {
+  const style = myDocument.createElement('style')
   style.type = 'text/css'
   try {
-    style.appendChild(document.createTextNode(css))
+    style.appendChild(myDocument.createTextNode(css))
   } catch (ex) {
     style.styleSheet.cssText = css
   }
-  document.getElementsByTagName('head')[0].appendChild(style)
+  myDocument.getElementsByTagName('head')[0].appendChild(style)
 }
 
 /**
@@ -18,7 +21,7 @@ function createCssStyle(css) {
  * @param {Node} node
  * @param {Function} callback
  */
-function traverseTextDom(node, callback) {
+function traverseTextDom (node, callback) {
   if (node.nodeType === Node.TEXT_NODE) { // text node
     callback(node)
   } else if (node.nodeType === Node.ELEMENT_NODE) { // element node
@@ -30,15 +33,15 @@ function traverseTextDom(node, callback) {
 
 /**
  * 将高亮的dom节点列表转换并合并为一个文本节点
- * @param {List} domList 
- * @returns 
+ * @param {List} domList
+ * @returns
  */
 function convertHighlightDomToTextNode (domList) {
   if (!domList || !domList.length) { return }
   domList.forEach(dom => {
     if (dom && dom.parentNode) {
       const parent = dom.parentNode
-      const textNode = document.createTextNode(dom.textContent)
+      const textNode = myDocument.createTextNode(dom.textContent)
       parent.insertBefore(textNode, dom)
       parent.removeChild(dom)
       parent.normalize() // 合并相邻的文本节点
@@ -51,11 +54,11 @@ function convertHighlightDomToTextNode (domList) {
  * @param {Node} node
  * @param {Array} domIndexList
  * @param {String} highlightClass
- * @returns {Array} domList 
+ * @returns {Array} domList
  */
-function getHighlightdomList(node, domIndexList, highlightClass) {
+function getHighlightdomList (node, domIndexList, highlightClass) {
   const nodeList = []
-  const callback = (node) => { nodeList.push(node) }
+  const callback = (node) => { node.nodeValue.trim() && nodeList.push(node) }
   traverseTextDom(node, callback)
   let currentTextIndex = 0
   let nextDomIndexIndex = 0
@@ -63,7 +66,7 @@ function getHighlightdomList(node, domIndexList, highlightClass) {
   const domList = []
   nodeList.forEach(node => {
     const parent = node.parentNode
-    const text = node.nodeValue.trim()
+    const text = node.nodeValue
     const len = text.length
     if (!parent || !text || !len) { return }
     const textList = []
@@ -76,7 +79,7 @@ function getHighlightdomList(node, domIndexList, highlightClass) {
       }
     }
     if (textList.length) {
-      const tempNode = document.createElement('span')
+      const tempNode = myDocument.createElement('span')
       tempNode.innerHTML = textList.join('')
       const children = tempNode.children
       if (children) {
@@ -98,17 +101,17 @@ function getHighlightdomList(node, domIndexList, highlightClass) {
 
 /**
  * 获取搜索结果
- * @param {String} selector 
- * @param {String} searchContent 
- * @param {List} searchResult 
- * @param {String} highlightClass 
- * @returns 
+ * @param {String} selector
+ * @param {String} searchContent
+ * @param {List} searchResult
+ * @param {String} highlightClass
+ * @returns
  */
-function getSearchResult(selector, searchContent, searchResult, highlightClass) {
-  const container = document.querySelector(selector)
+function getSearchResult (selector, searchContent, searchResult, highlightClass) {
+  const container = myDocument.querySelector(selector)
   if (!container || !searchContent) { return }
   let text = ''
-  const callback = (node) => { text += node.nodeValue.trim() }
+  const callback = (node) => { text += node.nodeValue.trim() ? node.nodeValue : '' }
   traverseTextDom(container, callback)
   if (!text) { return }
   // 获取所有匹配结果的索引(每个匹配结果的第一个字符所在位置)
@@ -144,13 +147,12 @@ function getSearchResult(selector, searchContent, searchResult, highlightClass) 
 }
 
 export class SearchBoxUtil {
-
   static instanceCount = 0
 
   /**
    * 清除搜索的数据
    */
-  clearSearchData() {
+  clearSearchData () {
     this.searchContent = ''
     this.currentIndex = -1
     for (const result of this.searchResult) {
@@ -160,41 +162,48 @@ export class SearchBoxUtil {
   }
 
   /**
-   * @param {String} highlightColor 
-   * @param {String} currentColor 
+   * @param {String} highlightColor
+   * @param {String} currentColor
    */
-  constructor(highlightColor = 'rgb(246, 186, 130)', currentColor = 'rgb(246, 137, 31)') {
+  constructor (highlightColor = 'rgb(246, 186, 130)', currentColor = 'rgb(246, 137, 31)', iframeId = null) {
     SearchBoxUtil.instanceCount++
+    this.highlightColor = highlightColor
+    this.currentColor = currentColor
     this.highlightClass = 'search-box-highlight-' + SearchBoxUtil.instanceCount
     this.currentClass = 'search-box-current-' + SearchBoxUtil.instanceCount
-    const css = `.${this.highlightClass} { background-color: ${highlightColor}; } .${this.currentClass} { background-color: ${currentColor}; }`
-    createCssStyle(css)
+    if (iframeId) {
+      this.lastIframeSrc = ''
+    } else {
+      const css = `.${this.highlightClass} { background-color: ${highlightColor}; } .${this.currentClass} { background-color: ${currentColor}; }`
+      createCssStyle(css)
+    }
     this.searchResult = []
     this.clearSearchData()
   }
 
   /**
    * 设置搜索的位置
-   * @param {List} selectorList 
+   * @param {List} selectorList
    */
-  setSelectorList(selectorList) {
+  setSelectorList (selectorList) {
     this.selectorList = selectorList
     this.clearSearchData()
   }
 
   /**
    * 搜索
-   * @param {String} searchContent 
-   * @param {List} selectorList 
-   * @returns 
+   * @param {String} searchContent
+   * @param {List} selectorList
+   * @returns
    */
-  search(searchContent, selectorList = null) {
+  search (searchContent, selectorList = null) {
     if (selectorList) {
       this.setSelectorList(selectorList)
     }
     if (!this.selectorList || !this.selectorList.length) { return }
     this.clearSearchData()
     this.searchContent = searchContent
+    this.iframeId && this._updateIframeStatus()
     if (this.searchContent) {
       this.selectorList.forEach((selector) => {
         getSearchResult(selector, searchContent, this.searchResult, this.highlightClass)
@@ -205,9 +214,9 @@ export class SearchBoxUtil {
 
   /**
    * 设置当前结果
-   * @param {Number} index 
+   * @param {Number} index
    */
-  setCurrent(index) {
+  setCurrent (index) {
     const lastSelector = this.searchResult[this.currentIndex] ? this.searchResult[this.currentIndex].selector : null
     const currentSelector = this.searchResult[index] ? this.searchResult[index].selector : null
     this.beforeJump && this.beforeJump(index, currentSelector, this.currentIndex, lastSelector)
@@ -215,6 +224,7 @@ export class SearchBoxUtil {
       this.searchResult[this.currentIndex].domList.forEach((dom) => {
         dom.classList.remove(this.currentClass)
       })
+      this.searchResult[this.currentIndex].domList[0].scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
     this.currentIndex = index
     if (this.currentIndex >= 0 && this.currentIndex < this.searchResult.length) {
@@ -228,26 +238,40 @@ export class SearchBoxUtil {
   /**
    * 跳转到前一个
    */
-  searchPrevious() {
+  searchPrevious () {
     this.setCurrent((this.currentIndex - 1 + this.searchResult.length) % this.searchResult.length)
   }
 
   /**
    * 跳转到后一个
    */
-  searchNext() {
+  searchNext () {
     this.setCurrent((this.currentIndex + 1) % this.searchResult.length)
   }
 
   /**
    * 设置跳转结果前后的回调
    * callback(currentIndex, currentSelector, lastIndex, lastSelector)
-   * @param {Function} beforeJump 
-   * @param {Function} afterJump 
+   * @param {Function} beforeJump
+   * @param {Function} afterJump
    */
-  setJumpCallback(beforeJump, afterJump) {
+  setJumpCallback (beforeJump, afterJump) {
     beforeJump && (this.beforeJump = beforeJump)
     afterJump && (this.afterJump = afterJump)
   }
-}
 
+  _updateIframeStatus () {
+    const myIframe = document.getElementById(this.iframeId)
+    if (myIframe) {
+      myDocument = myIframe.contentDocument || myIframe.contentWindow.document
+    } else {
+      myDocument = document
+    }
+    if (myIframe && this.lastIframeSrc !== myIframe.src) {
+      const css = `.${this.highlightClass} { background-color: ${this.highlightColor}; } .${this.currentClass} { background-color: ${this.currentColor}; }`
+      createCssStyle(css)
+      this.lastIframeSrc = myIframe.src
+    }
+  }
+
+}

@@ -9,6 +9,7 @@
         - highlightColor: 高亮颜色, default: 'rgb(246, 186, 130)'
         - currentColor: 当前高亮颜色, default: 'rgb(246, 137, 31)'
         - selectorList: 检索的选择器列表, default: []
+        - iFrameId: 检索的iframe的id, default: null
         - beforeJump: 跳转前的回调函数, default: () => {}
         - afterJump: 跳转后的回调函数, default: () => {}
         - (注: 上述两个回调函数参数为currentIndex, currentSelector, lastIndex, lastSelector)
@@ -31,7 +32,9 @@
       @input="search"
     >
     <!--当前/总数、上一个、下一个、关闭-->
-    <span class="input-append" style="user-select: none"> {{ current }}/{{ total }} </span>
+    <span class="input-append" style="user-select: none">
+      &nbsp;&nbsp;{{ current }}/{{ total }}&nbsp;&nbsp;
+    </span>
     <span class="input-append" @click="searchPrevious">
       <div class="svg-container">
         <svg width="100px" height="100px">
@@ -69,7 +72,7 @@ export default {
     },
     boxStyle: {
       type: String,
-      default: 'position: fixed; top: 0px; right: 100px;'
+      default: 'position: fixed; top: 5px; right: 70px;'
     },
     highlightColor: {
       type: String,
@@ -82,6 +85,10 @@ export default {
     selectorList: {
       type: Array,
       default: () => []
+    },
+    iFrameId: {
+      type: String,
+      default: null
     },
     beforeJump: {
       type: Function,
@@ -103,6 +110,7 @@ export default {
   watch: {
     value (val) {
       this.input = val
+      this.search()
     }
   },
   mounted () {
@@ -142,6 +150,7 @@ export default {
       this.input = ''
       this.current = 0
       this.total = 0
+      this.searchBoxUtil.clearSearchData()
     }
   }
 }
@@ -177,6 +186,7 @@ export default {
   padding: 5px;
   font-size: 16px;
   overflow: hidden;
+  user-select: none;
 }
 .svg-container {
   width: 10px;
