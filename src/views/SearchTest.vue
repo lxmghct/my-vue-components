@@ -2,10 +2,11 @@
     <div>
         <search-box
             v-model="input"
+            box-style="position: fixed; top: 15px; left: 500px;"
             :selector-list="['#search-main']"
             :before-jump="test"/>
         <div id="search-main">
-            <h1>testip</h1>
+            <h1>test search</h1>
                 ababababababab
             <span style="text-decoration:underline;">
                 Lorem ipsum dolor, &nbsp;&nbsp;sit amet consectetur adipisicing elit. Quibusdam, optio. Eaque odio veritatis soluta quibusdam doloribus eos consequatur reiciendis, provident quis accusamus ab consectetur quaerat accusantium animi ipsam eius ipsa!
@@ -43,3 +44,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+#search-main {
+    width: 500px;
+    margin: 0 auto 20px auto;
+}
+</style>
+

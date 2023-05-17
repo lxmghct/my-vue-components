@@ -5,6 +5,7 @@
   @description:
     * props:
         - value/v-model: 检索框的值, default: ''
+        - boxStyle: 检索框的样式, default: 'position: fixed; top: 0px; right: 100px;'
         - highlightColor: 高亮颜色, default: 'rgb(246, 186, 130)'
         - currentColor: 当前高亮颜色, default: 'rgb(246, 137, 31)'
         - selectorList: 检索的选择器列表, default: []
@@ -21,7 +22,7 @@
 -->
 
 <template>
-  <div class="search-box">
+  <div class="search-box" :style="boxStyle">
     <input
       v-model="input"
       placeholder="请输入检索内容"
@@ -34,14 +35,14 @@
     <span class="input-append" @click="searchPrevious">
       <div class="svg-container">
         <svg width="100px" height="100px">
-          <path d="M 60 10 L 3 50 L 60 90" stroke="black" fill="transparent" stroke-linecap="round"/>
+          <path d="M 100 0 L 0 50 L 100 100" stroke="black" fill="transparent" stroke-linecap="round"/>
         </svg>
       </div>
     </span>
     <span class="input-append" @click="searchNext">
       <div class="svg-container">
         <svg width="100px" height="100px" transform="rotate(180)">
-          <path d="M 60 10 L 3 50 L 60 90" stroke="black" fill="transparent" stroke-linecap="round"/>
+          <path d="M 100 0 L 0 50 L 100 100" stroke="black" fill="transparent" stroke-linecap="round"/>
         </svg>
       </div>
     </span>
@@ -65,6 +66,10 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    boxStyle: {
+      type: String,
+      default: 'position: fixed; top: 0px; right: 100px;'
     },
     highlightColor: {
       type: String,
@@ -144,9 +149,6 @@ export default {
 
 <style scoped>
 .search-box {
-  position: fixed;
-  top: 0px;
-  right: 100px;
   width: 350px;
   z-index: 999;
   display: flex;
@@ -161,6 +163,7 @@ export default {
   border-radius: 3px;
   border: 1px solid #ddd;
   width: 100%;
+  margin-right: 5px;
 }
 .search-input:focus {
   outline: none;
@@ -171,15 +174,18 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-left: 10px;
+  padding: 5px;
   font-size: 16px;
+  overflow: hidden;
 }
 .svg-container {
   width: 10px;
   height: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
   cursor: pointer;
+}
+.svg-container:hover {
+  background-color: #ddd;
 }
 </style>
